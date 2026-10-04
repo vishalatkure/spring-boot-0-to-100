@@ -4,6 +4,7 @@ package Presentation_LayerDTO_Controllers.PresentationLayer.controllers;
 import Presentation_LayerDTO_Controllers.PresentationLayer.dto.EmployeeDto;
 import Presentation_LayerDTO_Controllers.PresentationLayer.entities.EmployeeEntity;
 import Presentation_LayerDTO_Controllers.PresentationLayer.repositories.EmployeeRepository;
+import Presentation_LayerDTO_Controllers.PresentationLayer.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -24,11 +25,21 @@ public class EmployeeController {
 //    }
 
 // before service layer this controller is depend one one dependency callled EmployeeRepository
-    private final EmployeeRepository employeeRepository; // this is dependency Injecation
+  //  private final EmployeeRepository employeeRepository; // this is dependency Injecation
+    // this is not good practise we service layer to handele the buissness logic
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    // we need to add service here
+
+    private final EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
+
+
+//    public EmployeeController(EmployeeRepository employeeRepository) {
+//        this.employeeRepository = employeeRepository;
+//    }
 
 
 //    @GetMapping("/{employeeid}")
@@ -37,8 +48,8 @@ public class EmployeeController {
 //    }
 
     @GetMapping("/{employeeid}")
-    public EmployeeEntity getEmployeeById(@PathVariable(name = "employeeid") long id){
-        return employeeRepository.findById(id).orElse(null);
+    public EmployeeDto getEmployeeById(@PathVariable(name = "employeeid") long id){
+        return employeeService.getEmployeeById(id);
     }
 
 
@@ -50,9 +61,9 @@ public class EmployeeController {
 //    }
 
     @GetMapping()
-    public List<EmployeeEntity> getAllEmployee(@RequestParam(required = false , name = "inputage") Integer age,
+    public List<EmployeeDto> getAllEmployee(@RequestParam(required = false , name = "inputage") Integer age,
                                                @RequestParam(required = false)String sortBy){
-        return employeeRepository.findAll();
+        return employeeService.getAllEmployee();
     }
 //
 //    @PostMapping
@@ -63,8 +74,8 @@ public class EmployeeController {
 
 
     @PostMapping
-    public EmployeeEntity createNewEmplyee(@RequestBody EmployeeEntity inputEmployee){
-        return employeeRepository.save(inputEmployee);
+    public EmployeeDto createNewEmplyee(@RequestBody EmployeeDto inputEmployee){
+        return employeeService.createNewEmplyee(inputEmployee);
     }
 
 
